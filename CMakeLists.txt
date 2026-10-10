@@ -32,3 +32,14 @@ install(TARGETS
 DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
+add_executable(emergency_stop_publisher src/emergency_stop_publisher.cpp)
+ament_target_dependencies(emergency_stop_publisher rclcpp std_msgs)
+
+add_executable(emergency_stop_subscriber src/emergency_stop_subscriber.cpp)
+ament_target_dependencies(emergency_stop_subscriber rclcpp std_msgs)
+
+install(TARGETS
+  emergency_stop_publisher
+  emergency_stop_subscriber
+  DESTINATION lib/${PROJECT_NAME}
+)
