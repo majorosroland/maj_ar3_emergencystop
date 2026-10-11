@@ -1,34 +1,38 @@
-# `maj_ar3_emergencystop` package
-ROS 2 C++ package.  [![Static Badge](https://img.shields.io/badge/ROS_2-Humble-34aec5)](https://docs.ros.org/en/humble/)
-## Packages and build
+# maj_ar3_emergencystop
 
-It is assumed that the workspace is `~/ros2_ws/`.
+ROS 2 C++ csomag az AR3 robotkar vészleállító (emergency stop) funkciójának megvalósításához.
 
-### Clone the packages
-``` r
-cd ~/ros2_ws/src
+## Feladatleírás és működés
+
+A csomag célja az AR3 robotkar biztonsági vészleállító jelének kezelése egy adatgeneráló és egy feldolgozó csomópont (node) közötti aszinkron kommunikációval:
+
+- **emergency_stop_publisher**: Időzített adatgeneráló node, amely periodikusan (1 másodpercenként) státuszüzeneteket publikál a megadott topicra (`std_msgs/msg/Bool` típus). Szimulálja a periodikus vészleállító jel aktiválását.
+- **emergency_stop_subscriber**: Adatfeldolgozó node, amely feliratkozik a topicra, folyamatosan figyeli az üzeneteket, és vészleállító állapot érzékelésekor (`true`) azonnal naplózza a robot megállítását.
+
+## Node-Topic architektúra (Mermaid diagram)
+
+```mermaid
+graph LR
+    subgraph maj_ar3_emergencystop
+        PUB[emergency_stop_publisher]
+        TOPIC((/ar3/emergency_stop<br>std_msgs/msg/Bool))
+        SUB[emergency_stop_subscriber]
+    end
+
+    PUB -->|publish| TOPIC
+    TOPIC -->|subscribe| SUB
 ```
-``` r
-git clone https://github.com/majorosroland/maj_ar3_emergencystop
-```
 
-### Build ROS 2 packages
-``` r
+## Fordítás (Build)
+
+```bash
 cd ~/ros2_ws
-```
-``` r
 colcon build --packages-select maj_ar3_emergencystop --symlink-install
+source install/setup.bash
 ```
 
-<details>
-<summary> Don't forget to source before ROS commands.</summary>
+## Futtatás (Launch)
 
-``` bash
-source ~/ros2_ws/install/setup.bash
-```
-</details>
-
-``` r
+```bash
 ros2 launch maj_ar3_emergencystop emergency_stop.launch.py
 ```
-
